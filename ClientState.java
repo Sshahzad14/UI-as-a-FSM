@@ -106,7 +106,7 @@ public class ClientState extends WarehouseState {
     
     if(client != null)
     {
-
+    	
 		System.out.println("==================================");
     	System.out.println("Viewing Client " + client.toString());
     	System.out.println("==================================");
@@ -182,22 +182,6 @@ public class ClientState extends WarehouseState {
 	  else 
 		  System.out.println("Invalid product id."); 
   }
-
-  public void salesclerkmenu()
-  {
-       running = false;
-       exitCode = 1;       
-       
-       //System.out.println("Switch to sales clerk menu requested."); 
-  }
-
-  public void managermenu()
-  {
-       running = false;
-       exitCode = 2;       
-       
-       //System.out.println("Switch to manager menu requested."); 
-  }
   
   public void setUID_tester(String uID)
   {
@@ -206,9 +190,17 @@ public class ClientState extends WarehouseState {
 
   public void logout()
   {
-	   running = false; 
-	   exitCode = 0;
-	   //System.out.println("Logout requested"); 
+
+    if (WarehouseContext.instance().getLogin() == WarehouseContext.IsSalesClerk)
+    {  //stem.out.println(" going to login \n");
+    	(WarehouseContext.instance()).changeState(2); // exit with a code 2
+    }
+    else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsClient)
+    {  //stem.out.println(" going to login \n");
+    	(WarehouseContext.instance()).changeState(0); // exit with a code 0
+    }
+    else 
+    	(WarehouseContext.instance()).changeState(1); // exit code 1, indicates error
   }
  
   public void terminate()
