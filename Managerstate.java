@@ -110,78 +110,33 @@ public class Managerstate extends WarehouseState {
     System.out.println(HELP + " for help");
   }
 
-  public void loadData() {
-    try {
-      Warehouse tempWarehouse = Warehouse.retrieve();
-      if (tempWarehouse != null) {
-        System.out.println(" The Warehouse has been successfully retrieved from the file WarehouseData \n");
-        warehouse = tempWarehouse;
-      } else {
-        System.out.println("File doesnt exist; creating new warehouse");
-        warehouse = Warehouse.instance();
-      }
-    } catch (Exception cnfe) {
-      cnfe.printStackTrace();
-    }
-  }
-
   public void clerkmenu() {
     (WarehouseContext.instance()).changeState(0);
   }
 
-  public void assignProduct() {
+   public void assignProduct()
+   {
+        boolean result;
+        System.out.println("Assigning Product To Manufacturer");
+        System.out.println("=========================");
+        String pid = getToken("Enter Product Id (Example P1):");
+        String mid = getToken("Enter Manufacturer Id (Example M1):");
+        result = warehouse.assignProductToManufacturer(pid, mid);
 
-    // get input from user. check if product exists
-    String pID = getToken("Enter product ID: ");
-    Product product;
-    if ((product = warehouse.searchProduct(pID)) == null) {
-      System.out.println("Product does not exist.");
-      return;
-    }
-
-    // get input from user. check if manufacturer exists
-    // String mID = getToken("Enter manufacturer ID: ");
-    // Manufacturer m;
-    // if ((m = warehouse.searchManufacturer(mID)) == null) {
-    //  System.out.println("No such manufacturer.");
-    //  return;
-    // }
-
-    // get price and quantity, turn to doubles
-    double p, q;
-    while (true) {
-      String price = getToken("Enter product unit price: ");
-      String quantity = getToken("enter product quantity to assign");
-      try {
-        p = Double.parseDouble(price);
-        q = Double.parseDouble(quantity);
-        break;
-      } catch (NumberFormatException ignore) {
-        System.out.println("Invalid input");
-      }
-    }
-
-    // pass inputs to warehouse
-    product = warehouse.assignProductToManufacturer(productID, manufacturerID, price);
-    if (product != null) {
-	   Manufacturer mfct = manufacturerList.search(manufacturerID);
-	   Product prdct = productList.search(productID);
-	
-    if(mfct != null && prdct != null){
-    	SuppliedProduct spl_prdct = new SuppliedProduct(mfct, prdct, price);
-    	
-        mfct.assignProduct(spl_prdct);
-        prdct.assignSuppliedProduct(spl_prdct);
-        return true;
-    }
-    return false;
-  }}
+        if(result == true){
+            System.out.println("SUCCESS: Assigned product to manufacturer ");
+        }
+        else
+        {
+            System.out.println("FAILED to assign product");
+        }
+   }
 
    public void modifyPrice(){
     String p = getToken("Please enter product ID: ");
     Product product = warehouse.searchProduct(p);
     String m = getToken("Please enter manufacturer ID: ");
-   // Manufacturer manufacturer = warehouse.searchManufacturer(m);
+    Manufacturer manufacturer = warehouse.searchManufacturer(m);
     Manufacturer s;
     String price;
     Double pr;
@@ -189,7 +144,7 @@ public class Managerstate extends WarehouseState {
       Iterator<Manufacturer> suppTraversal = warehouse.getManufacturers(product);
       while (suppTraversal.hasNext() != false) {
         s=suppTraversal.next();
-        if(s.getManufacturer()==manufacturer){
+        if(s.getManufacturers()==manufacturer){
           price = getToken("Enter new price: ");
           pr=Double.parseDouble(price);
           s.setNewPrice(pr);
@@ -204,23 +159,21 @@ public class Managerstate extends WarehouseState {
   System.out.println("Not found");
 }
 
-  public void addnewManufacturer() {
-    Manufacturer result;
-    do {
-      String mName = getToken("Enter name");
-      String mAddress = getToken("Enter address");
-      String mPhonenumber = getToken("Enter phone number");
-      result = warehouse.addManufacturer(mName, mAddress, mPhonenumber);
-      if (result != null) {
+public void addManufacturer()
+    {
+        String name = getToken("Enter manufacturer name");
+        String address = getToken("Enter address");
+        String phone = getToken("Enter phone");
+        Manufacturer result;
+        result = warehouse.addManufacturer(name, address, phone);
+
+        if(result == null)
+        {
+            System.out.println("Could not add manufacturer");
+        }
+
         System.out.println(result);
-      } else {
-        System.out.println("Manufacturer could not be added");
-      }
-      if (!yesOrNo("Add more Manufacturers?")) {
-        break;
-      }
-    } while (true);
-  }
+    }
 
   
 
@@ -239,9 +192,7 @@ public class Managerstate extends WarehouseState {
                                             break;
         case ASSIGN_PRODUCT:                assignProduct();
                                             break;
-        case ADD_MANUFACTURER:              addnewManufacturer();
-                                            break;
-        case LOAD_DATA:                     loadData();
+        case ADD_MANUFACTURER:              addManufacturer();
                                             break;
         case CLERKMENU:                     clerkmenu();
                                             break;
