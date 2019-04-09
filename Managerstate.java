@@ -21,7 +21,7 @@ public class Managerstate extends WarehouseState {
   private Managerstate() {
       super();
       warehouse = Warehouse.instance();
-      //context = WarehouseContext.instance();
+      context = WarehouseContext.instance();
   }
 
   public static Managerstate instance() {
@@ -140,12 +140,12 @@ public class Managerstate extends WarehouseState {
     }
 
     // get input from user. check if manufacturer exists
-    String mID = getToken("Enter manufacturer ID: ");
-    Manufacturer m;
-    if ((m = warehouse.searchManufacturer(mID)) == null) {
-      System.out.println("No such manufacturer.");
-      return;
-    }
+    // String mID = getToken("Enter manufacturer ID: ");
+    // Manufacturer m;
+    // if ((m = warehouse.searchManufacturer(mID)) == null) {
+    //  System.out.println("No such manufacturer.");
+    //  return;
+    // }
 
     // get price and quantity, turn to doubles
     double p, q;
@@ -162,10 +162,10 @@ public class Managerstate extends WarehouseState {
     }
 
     // pass inputs to warehouse
-    product = warehouse.assignProdToManufacturer(pID, mID, p, q);
+    product = warehouse.assignProductToManufacturer(pID, mID, p, q);
     if (product != null) {
       System.out
-          .println("Product: (" + product.getProductName() + ") was assigned too " + m.getManufacturerName() + "\n");
+          .println("Product: (" + product.getProduct() + ") was assigned too " + m.getManufacturerName() + "\n");
     } else {
       System.out.println("error in assigning product");
     }
@@ -175,12 +175,12 @@ public class Managerstate extends WarehouseState {
     String p = getToken("Please enter product ID: ");
     Product product = warehouse.searchProduct(p);
     String m = getToken("Please enter manufacturer ID: ");
-    Manufacturer manufacturer = warehouse.searchManufacturer(m);
+   // Manufacturer manufacturer = warehouse.searchManufacturer(m);
     Supplier s;
     String price;
     Double pr;
     if (product != null) {
-      Iterator<Supplier> suppTraversal = warehouse.getManufacturerForProduct(product);
+      Iterator<Supplier> suppTraversal = warehouse.getManufacturers(product);
       while (suppTraversal.hasNext() != false) {
         s=suppTraversal.next();
         if(s.getManufacturer()==manufacturer){
