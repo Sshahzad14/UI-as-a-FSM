@@ -132,7 +132,22 @@ public class Managerstate extends WarehouseState {
         }
    }
 
-   public void modifyPrice(){
+public void modifyPrice(){
+
+  String p = getToken("Enter product ID: ");
+  Product product - warehouse.searchProduct(p);
+  String price;
+  Double price_double;
+  Manufacturer m;
+  
+  price = getToken("Enter the new price: ");
+  price_double = Double.parseDouble(price);
+  m.setNewPrice(price_double);
+  System.out.println("Updated the new price.");
+  break;
+
+
+  /*
     String p = getToken("Please enter product ID: ");
     Product product = warehouse.searchProduct(p);
     String m = getToken("Please enter manufacturer ID: ");
@@ -155,8 +170,8 @@ public class Managerstate extends WarehouseState {
       }
       
   }
-  else
-  System.out.println("Not found");
+     else
+      System.out.println("Not found"); */
 }
 
 public void addManufacturer()
