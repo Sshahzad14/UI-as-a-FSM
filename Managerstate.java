@@ -162,25 +162,31 @@ public class Managerstate extends WarehouseState {
     }
 
     // pass inputs to warehouse
-    product = warehouse.assignProductToManufacturer(pID, mID, p, q);
+    product = warehouse.assignProductToManufacturer(productID, manufacturerID, price);
     if (product != null) {
-      System.out
-          .println("Product: (" + product.getProduct() + ") was assigned too " + m.getManufacturerName() + "\n");
-    } else {
-      System.out.println("error in assigning product");
+	   Manufacturer mfct = manufacturerList.search(manufacturerID);
+	   Product prdct = productList.search(productID);
+	
+    if(mfct != null && prdct != null){
+    	SuppliedProduct spl_prdct = new SuppliedProduct(mfct, prdct, price);
+    	
+        mfct.assignProduct(spl_prdct);
+        prdct.assignSuppliedProduct(spl_prdct);
+        return true;
     }
-  }
+    return false;
+  }}
 
-  public void modifyPrice(){
+   public void modifyPrice(){
     String p = getToken("Please enter product ID: ");
     Product product = warehouse.searchProduct(p);
     String m = getToken("Please enter manufacturer ID: ");
    // Manufacturer manufacturer = warehouse.searchManufacturer(m);
-    Supplier s;
+    Manufacturer s;
     String price;
     Double pr;
     if (product != null) {
-      Iterator<Supplier> suppTraversal = warehouse.getManufacturers(product);
+      Iterator<Manufacturer> suppTraversal = warehouse.getManufacturers(product);
       while (suppTraversal.hasNext() != false) {
         s=suppTraversal.next();
         if(s.getManufacturer()==manufacturer){
@@ -219,7 +225,7 @@ public class Managerstate extends WarehouseState {
   
 
   public void logout() {
-    (WarehouseContext.instance()).changeState(3); // exit with a code 0
+    (WarehouseContext.instance()).changeState(2); // logout to manager state
   }
 
 
